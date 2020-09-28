@@ -1,0 +1,16 @@
+version: '3'
+services:
+    database:
+        image: mongo
+        container_name: mongo-container
+        restart: always
+        command: ["--bind_ip_all"]
+        environment:
+            - MONGO_INITDB_DATABASE=node-starter
+            - MONGO_INITDB_ROOT_USERNAME=root
+            - MONGO_INITDB_ROOT_PASSWORD=password
+        volumes:
+            - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro  # ro means read-only
+            - ./mongo-volume:/data/db
+        ports:
+            - "27017-27019:27017-27019"
