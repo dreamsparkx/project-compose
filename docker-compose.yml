@@ -1,14 +1,28 @@
 version: '3'
 services:
+    frontend:
+        container_name: frontend
+        build:
+            context: ./../react-redux-starter
+            dockerfile: Dockerfile.prod
+        ports:
+            - "3000:80"
+    backend:
+        container_name: backend
+        build:
+            context: ./../node-starter
+            dockerfile: Dockerfile
+        environment:
+            - MONGODB_URI_LOCAL=mongodb://node:password@database:27017/node-starter
+        ports:
+            - "5000:3000"
+        links:  #depends_on
+            - database
     database:
-        image: mongo
         container_name: mongo-container
+        build: .
         restart: always
         command: ["--bind_ip_all"]
-        environment:
-            - MONGO_INITDB_DATABASE=node-starter
-            - MONGO_INITDB_ROOT_USERNAME=root
-            - MONGO_INITDB_ROOT_PASSWORD=password
         volumes:
             - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro  # ro means read-only
             - ./mongo-volume:/data/db
